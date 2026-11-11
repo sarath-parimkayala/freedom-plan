@@ -136,6 +136,26 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
 .goal button{padding:9px 10px}
 @media (max-width:480px){.goal{grid-template-columns:1fr 1fr}.goal label:first-child{grid-column:1/-1}}
 
+.goal.loan{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+@media (max-width:480px){.goal.loan{grid-template-columns:1fr 1fr}.goal.loan label:first-child{grid-column:1/-1}}
+.goal select{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+.addtx{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;align-items:end}
+.monthnav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.monthnav strong{font-family:var(--display);font-size:1.05rem}
+.monthnav button{min-width:44px;font-size:1.1rem}
+.monthnav button:disabled{opacity:.35;cursor:default}
+.catrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:7px 0;font-size:.9rem}
+.catrow .bar{grid-column:1/-1;height:6px;border-radius:999px;background:var(--line);overflow:hidden}
+.catrow .bar span{display:block;height:100%;background:var(--accent);border-radius:999px}
+.txrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.txrow:last-child{border-bottom:none}
+.txrow small{display:block;color:var(--muted)}
+.txrow button{padding:4px 9px}
+.kv button{margin-top:6px;align-self:flex-start}
+ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:.88rem;color:var(--muted)}
+.goal .res{align-items:center}
+#loanPlan{display:flex;flex-direction:column;gap:10px;font-size:.9rem}
+#loanPlan b{font-family:var(--display)}
 .total{display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
 .total-line{display:flex;justify-content:space-between;gap:12px;font-size:.92rem}
 .total-line.sum{border-top:1px solid var(--line);padding-top:10px;font-weight:600}
@@ -186,7 +206,7 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
       <div class="eyebrow">Monthly money</div>
       <div class="fields">
         <label class="f">Take-home income (₹/month)<input id="income" type="number" inputmode="numeric" min="0" step="1000"></label>
-        <label class="f">Expenses (₹/month)<input id="expense" type="number" inputmode="numeric" min="0" step="1000"><span class="hint">Include rent/EMI</span></label>
+        <label class="f">Expenses (₹/month)<input id="expense" type="number" inputmode="numeric" min="0" step="1000"><span class="hint">Living costs incl. rent. Not loan EMIs</span></label>
         <label class="f">Investing now (₹/month)<input id="sip" type="number" inputmode="numeric" min="0" step="500"><span class="hint">SIPs, EPF, PPF, NPS</span></label>
         <label class="f">Raise SIP each year (%)<input id="step" type="number" inputmode="decimal" min="0" max="30" step="1"><span class="hint">Step-up with salary hikes</span></label>
       </div>
@@ -199,7 +219,6 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
         <label class="f">Health cover (₹)<input id="health" type="number" inputmode="numeric" min="0" step="100000"></label>
         <label class="f">Term life cover (₹)<input id="term" type="number" inputmode="numeric" min="0" step="500000"></label>
         <label class="f">Anyone depends on your income?<select id="deps"><option value="yes">Yes</option><option value="no">No</option></select></label>
-        <label class="f">Credit card / personal loan due (₹)<input id="badDebt" type="number" inputmode="numeric" min="0" step="1000"></label>
       </div>
     </div>
     <details class="fgroup" id="assump">
@@ -215,6 +234,32 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
       <button class="link" id="resetBtn" type="button">Reset to example</button>
     </div>
   </details>
+
+  <!-- Expenses -->
+  <section id="spendSec">
+    <div class="sec-head">
+      <div class="eyebrow">Expenses</div>
+      <h2>Where your money goes</h2>
+      <p class="muted">Log spends as they happen. Leave out loan EMIs, which are tracked under Loans.</p>
+    </div>
+    <form class="panel addtx" id="txForm" novalidate>
+      <label class="f">Amount (₹)<input id="txAmt" type="number" inputmode="numeric" min="1" step="1" placeholder="0"></label>
+      <label class="f">Category<select id="txCat"></select></label>
+      <label class="f">Note<input id="txNote" type="text" placeholder="Petrol, Swiggy, rent…"></label>
+      <label class="f">Date<input id="txDate" type="date"></label>
+      <button class="primary" type="submit">Add expense</button>
+    </form>
+    <p class="hint" id="txSampleNote">These are sample entries. They clear when you add your first expense.</p>
+    <div class="monthnav">
+      <button type="button" id="mPrev" aria-label="Previous month">‹</button>
+      <strong id="mLabel"></strong>
+      <button type="button" id="mNext" aria-label="Next month">›</button>
+    </div>
+    <div class="kv" id="spendKv"></div>
+    <div class="panel" id="catBars"></div>
+    <details class="panel" id="txListWrap"><summary>Entries this month</summary><div id="txList"></div></details>
+    <div class="total" id="cardFit"></div>
+  </section>
 
   <!-- Retirement -->
   <section id="retire">
@@ -253,6 +298,23 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
     <ol class="ladder" id="ladderList"></ol>
   </section>
 
+  <!-- Loans -->
+  <section id="loansSec">
+    <div class="sec-head">
+      <div class="eyebrow">Loans</div>
+      <h2>Your loans and when they end</h2>
+      <p class="muted">Add each loan with what you still owe, its interest rate and EMI. You'll find these in your loan app or statement.</p>
+    </div>
+    <div class="kv" id="loanKv"></div>
+    <div class="goals" id="loans"></div>
+    <div><button type="button" id="addLoan">Add a loan</button></div>
+    <div class="total">
+      <h3>Pay loans off faster</h3>
+      <label class="f">Extra I can pay each month (₹)<input id="extraPay" type="number" inputmode="numeric" min="0" step="500"><span class="hint">On top of your EMIs. Most banks allow part-prepayment</span></label>
+      <div id="loanPlan"></div>
+    </div>
+  </section>
+
   <!-- Goals -->
   <section id="goalsSec">
     <div class="sec-head">
@@ -279,22 +341,43 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
 <script>
 (function(){
   var KEY = "freedom-plan-v1";
+  var CATS = ["Rent","Groceries","Eating out","Fuel","Travel","Bills & recharges","Shopping","Health","Family & gifts","Other"];
+  function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function sampleTx(){
+    var out = [], now = new Date();
+    var t = [[1,"Rent",22000,"House rent"],[3,"Groceries",4200,"Monthly groceries"],[5,"Fuel",1500,"Petrol"],[8,"Bills & recharges",1800,"Electricity + mobile"],[10,"Eating out",900,"Dinner out"],[14,"Shopping",3500,"Clothes"],[17,"Fuel",1500,"Petrol"],[20,"Groceries",2600,"Vegetables, milk"],[22,"Eating out",650,"Food delivery"],[25,"Health",1200,"Medicines"],[27,"Family & gifts",2000,"Gift"]];
+    for (var k=0; k<3; k++) t.forEach(function(x, j){
+      var d = new Date(now.getFullYear(), now.getMonth()-k, x[0]); if (d > now) return;
+      out.push({id:"s"+k+"-"+j, d:ymd(d), a:Math.round(x[2]*(1+((x[0]*7+k*13)%9-4)/40)), c:x[1], note:x[3]});
+    });
+    return out;
+  }
   var EX = {
     age:30, retireAge:55, life:85, risk:"mid",
     income:120000, expense:50000, sip:20000, step:10,
-    corpus:800000, emergency:200000, health:500000, term:5000000, deps:"yes", badDebt:0,
+    corpus:800000, emergency:200000, health:500000, term:5000000, deps:"yes", extraPay:3000,
     ret:12, postRet:7.5, infl:6,
     goals:[
       {name:"Car", cost:800000, years:4},
       {name:"Child's education", cost:2500000, years:15}
-    ]
+    ],
+    loans:[
+      {name:"Personal loan", kind:"emi", orig:500000, bal:300000, rate:13.5, emi:11600},
+      {name:"Gold loan", kind:"gold", orig:150000, bal:150000, rate:9.5, months:10},
+      {name:"Bike loan", kind:"emi", orig:100000, bal:60000, rate:11, emi:3300}
+    ],
+    tx: sampleTx(), txSample: true
   };
-  var FIELDS = ["age","retireAge","life","risk","income","expense","sip","step","corpus","emergency","health","term","deps","badDebt","ret","postRet","infl"];
+  var FIELDS = ["age","retireAge","life","risk","income","expense","sip","step","corpus","emergency","health","term","deps","extraPay","ret","postRet","infl"];
   var S, isExample = true;
 
   function clone(o){ return JSON.parse(JSON.stringify(o)); }
   function load(){
-    try { var raw = localStorage.getItem(KEY); if(raw){ var o = JSON.parse(raw); isExample = !!o._ex; return Object.assign(clone(EX), o); } } catch(e){}
+    try { var raw = localStorage.getItem(KEY); if(raw){ var o = JSON.parse(raw); isExample = !!o._ex;
+      if (!o.loans){ o.loans = o._ex ? clone(EX.loans) : (parseFloat(o.badDebt)>0 ? [{name:"Personal loan", bal:o.badDebt, rate:14, emi:Math.round(o.badDebt*0.035)}] : []); }
+      if (o.extraPay===undefined) o.extraPay = o._ex ? EX.extraPay : 0;
+      if (!o.tx){ o.tx = o._ex ? clone(EX.tx) : []; o.txSample = !!o._ex; }
+      return Object.assign(clone(EX), o); } } catch(e){}
     return null;
   }
   function save(){
@@ -382,8 +465,56 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
   function goalReturn(y){ return y < 3 ? 0.065 : (y < 7 ? 0.09 : n(S.ret)/100); }
   function goalWhere(y){ return y < 3 ? "FD, RD or liquid fund" : (y < 7 ? "Hybrid / balanced advantage fund" : "Equity index fund"); }
 
+  // Month-by-month loan payoff. roll=true: freed EMIs + extra go to the highest-rate loan (avalanche)
+  function loanSim(loans, extra, roll){
+    var L = loans.map(function(l){ var gold = l.kind==="gold"; return {name:l.name, gold:gold, bal:Math.max(0,n(l.bal)), r:n(l.rate)/1200, emi:gold?0:Math.max(0,n(l.emi)), due:gold?Math.max(1,Math.round(n(l.months)||12)):null, end:null, int:0, li:0}; });
+    var budget = L.reduce(function(s,l){ return s + (l.bal>0 ? (l.gold ? l.bal*l.r : l.emi) : 0); }, 0) + extra;
+    var m = 0, total = 0;
+    function open(){ return L.filter(function(l){ return l.bal > 0.5; }); }
+    while (open().length && m < 600){
+      m++;
+      var pool = budget;
+      open().forEach(function(l){ var i = l.bal*l.r; l.li = i; l.bal += i; l.int += i; total += i; });
+      open().forEach(function(l){ var p = Math.min(l.gold ? l.li : l.emi, l.bal); l.bal -= p; pool -= p; });
+      if (roll){
+        var o = open().sort(function(a,b){ return b.r - a.r; });
+        for (var k=0; k<o.length && pool>0.5; k++){ var p2 = Math.min(pool, o[k].bal); o[k].bal -= p2; pool -= p2; }
+      }
+      L.forEach(function(l){ if (l.gold && l.bal > 0.5 && m >= l.due){ l.bal = 0; } if (l.bal <= 0.5 && l.end === null){ l.bal = 0; l.end = m; } });
+    }
+    return {months: open().length ? null : m, interest: total, loans: L};
+  }
+  function monthLabel(m){ var d = new Date(); d.setDate(1); d.setMonth(d.getMonth()+m); return d.toLocaleDateString("en-IN",{month:"short",year:"numeric"}); }
+  function rateChip(r){
+    return r >= 12 ? '<span class="chip bad">Costly. Pay off first</span>'
+      : r >= 9 ? '<span class="chip warn">Prepay when you can</span>'
+      : '<span class="chip good">Cheap. Fine to keep</span>';
+  }
+
   // ---------- Render ----------
   var $ = function(id){ return document.getElementById(id); };
+
+  function renderLoans(){
+    var box = $("loans"); box.innerHTML = "";
+    S.loans.forEach(function(l, idx){
+      var gold = l.kind === "gold";
+      var el = document.createElement("div"); el.className = "goal loan";
+      el.innerHTML =
+        '<label>Loan<input id="l'+idx+'n" data-l="'+idx+'" data-k="name" type="text"></label>'+
+        '<label>Type<select id="l'+idx+'t" data-l="'+idx+'" data-k="kind"><option value="emi">EMI loan</option><option value="gold">Gold loan (interest only)</option></select></label>'+
+        '<label>Loan amount (₹)<input id="l'+idx+'o" data-l="'+idx+'" data-k="orig" type="number" inputmode="numeric" min="0" step="1000"></label>'+
+        '<label>Still owe (₹)<input id="l'+idx+'b" data-l="'+idx+'" data-k="bal" type="number" inputmode="numeric" min="0" step="1000"></label>'+
+        '<label>Interest %/yr<input id="l'+idx+'r" data-l="'+idx+'" data-k="rate" type="number" inputmode="decimal" min="0" max="60" step="0.1"></label>'+
+        (gold
+          ? '<label>Months left<input id="l'+idx+'m" data-l="'+idx+'" data-k="months" type="number" inputmode="numeric" min="1" max="60" step="1"></label>'
+          : '<label>EMI (₹/mo)<input id="l'+idx+'e" data-l="'+idx+'" data-k="emi" type="number" inputmode="numeric" min="0" step="100"></label>')+
+        '<button type="button" data-dell="'+idx+'" aria-label="Remove loan">Remove</button>'+
+        '<div class="res" id="l'+idx+'res"></div>';
+      box.appendChild(el);
+      if (!l.kind) l.kind = "emi";
+      ["name","kind","orig","bal","rate", gold ? "months" : "emi"].forEach(function(k){ var f = el.querySelector('[data-k="'+k+'"]'); if (f) f.value = (l[k]===undefined ? "" : l[k]); });
+    });
+  }
 
   function renderGoals(){
     var box = $("goals"); box.innerHTML = "";
@@ -501,14 +632,68 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
       return '<div class="alloc-row"><span class="dot" style="background:'+r.c+'"></span><div><b>'+r.name+'</b><p>'+r.why+'</p></div><div class="amt">'+inr(monthly*r.pct/100,false)+'<small>'+Math.round(r.pct)+'%</small></div></div>';
     }).join("");
 
+    // Loans
+    var loans = S.loans || [];
+    var extra = Math.max(0, n(S.extraPay));
+    var base = loanSim(loans, 0, false), plan = loanSim(loans, extra, true);
+    var totalBal = 0, totalEmi = 0, costlyBal = 0;
+    var goldSave = 0, goldNotes = [];
+    loans.forEach(function(l){
+      var b = Math.max(0,n(l.bal)); totalBal += b;
+      if (b>0){
+        if (l.kind === "gold"){ totalEmi += b*n(l.rate)/1200; var mo = Math.max(1, Math.round(n(l.months)||12)); goldSave += b/mo; goldNotes.push({name:l.name, bal:b, mo:mo}); }
+        else totalEmi += Math.max(0,n(l.emi));
+        if (n(l.rate) >= 10) costlyBal += b;
+      }
+    });
+    loans.forEach(function(l, idx){
+      var el = $("l"+idx+"res"); if (!el) return;
+      var s = base.loans[idx], b = Math.max(0,n(l.bal)), o = n(l.orig);
+      var paid = Math.max(0, o - b), pct = o > 0 ? Math.min(100, paid/o*100) : 0;
+      var prog = o > 0 ? '<div class="meter" style="flex-basis:100%"><span style="width:'+pct.toFixed(1)+'%;background:var(--accent)"></span></div><span class="muted">Paid '+inr(paid)+' of '+inr(o)+' ('+Math.round(pct)+'%)</span>' : '';
+      var line;
+      if (b <= 0) line = '<span>Fully paid</span><span class="chip good">Closed</span>';
+      else if (l.kind === "gold") line = '<span>Interest <b>'+inr(b*n(l.rate)/1200,false)+'</b>/mo · repay '+inr(b)+' by <b>'+monthLabel(s.due||12)+'</b></span>'+rateChip(n(l.rate));
+      else if (s.end === null) line = '<span style="color:var(--bad)">EMI doesn\'t cover the interest. Check the numbers.</span>'+rateChip(n(l.rate));
+      else line = '<span>Closes <b>'+monthLabel(s.end)+'</b> · '+inr(s.int)+' interest left</span>'+rateChip(n(l.rate));
+      el.innerHTML = prog + line;
+    });
+    var emiPct = p.inc > 0 ? Math.round(totalEmi/p.inc*100) : 0;
+    var emiCol = emiPct > 40 ? "var(--bad)" : emiPct > 30 ? "var(--warn)" : "var(--good)";
+    $("loanKv").hidden = !loans.length;
+    $("loanKv").innerHTML =
+      '<div><strong>'+inr(totalBal)+'</strong><span>Total you still owe</span></div>'+
+      '<div><strong style="color:'+emiCol+'">'+inr(totalEmi,false)+'</strong><span>Monthly EMIs, '+emiPct+'% of income. Under 30% is healthy</span></div>'+
+      '<div><strong>'+(base.months===null ? "Never" : monthLabel(base.months))+'</strong><span>Debt-free date paying only EMIs</span></div>';
+    var lp;
+    if (!loans.length || totalBal <= 0){
+      lp = '<p class="muted">No loans added. Tap "Add a loan" if you have any.</p>';
+    } else {
+      var order = loans.filter(function(l){ return n(l.bal)>0; }).slice().sort(function(a,b){ return n(b.rate)-n(a.rate); });
+      lp = '<p>Payoff order, highest interest first: '+order.map(function(l){ return '<b>'+l.name+'</b> ('+n(l.rate)+'%)'; }).join(" → ")+'. When one closes, add its EMI to the next.</p>';
+      if (extra > 0 && plan.months !== null){
+        var sooner = base.months===null ? null : base.months - plan.months;
+        lp += '<div class="total-line"><span>Debt-free with '+inr(extra,false)+' extra</span><span><b>'+monthLabel(plan.months)+'</b></span></div>';
+        if (sooner !== null) lp += '<div class="total-line"><span>Time saved</span><span><b>'+(sooner>=12 ? Math.floor(sooner/12)+" yr "+(sooner%12)+" mo" : sooner+" months")+'</b></span></div>';
+        lp += '<div class="total-line"><span>Interest saved</span><span><b style="color:var(--good)">'+inr(Math.max(0, base.interest - plan.interest))+'</b></span></div>';
+      } else if (extra <= 0) {
+        lp += '<p class="muted">Enter an extra amount above to see how much sooner you can be debt-free.</p>';
+      }
+      if (costlyBal <= 0) lp += '<p class="muted">All your loans are under 10%. Investing the extra may earn more than prepaying.</p>';
+    }
+    goldNotes.forEach(function(g){
+      lp += '<p><b>'+g.name+':</b> you pay only interest now, and the full '+inr(g.bal)+' is due in '+g.mo+' months. Set aside <b>'+inr(g.bal/g.mo,false)+'</b> a month so you can repay on time, or renew it before the due date. If it lapses, the lender can auction your gold.</p>';
+    });
+    $("loanPlan").innerHTML = lp;
+
     // Ladder
-    var emTarget = 6*p.E, em = n(S.emergency), hl = n(S.health), tm = n(S.term), bd = n(S.badDebt);
+    var emTarget = 6*(p.E + totalEmi), em = n(S.emergency), hl = n(S.health), tm = n(S.term);
     var termTarget = S.deps==="yes" ? 15*12*p.inc : 0;
     var steps = [
-      {t:"Emergency fund", d:"6 months of expenses ("+inr(emTarget)+") in a savings account, FD or liquid fund.", ok: em>=emTarget, miss: inr(Math.max(0,emTarget-em))+" short"},
+      {t:"Emergency fund", d:"6 months of expenses and EMIs ("+inr(emTarget)+") in a savings account, FD or liquid fund.", ok: em>=emTarget, miss: inr(Math.max(0,emTarget-em))+" short"},
       {t:"Health insurance", d:"At least ₹10 L family cover of your own, even if work gives you some.", ok: hl>=1e6, miss: inr(Math.max(0,1e6-hl))+" short"},
       {t:"Term life insurance", d: S.deps==="yes" ? "About 15× yearly income ("+inr(termTarget)+"). Pure term plan, no investment mixed in." : "Not needed while no one depends on your income.", ok: tm>=termTarget, miss: inr(Math.max(0,termTarget-tm))+" short"},
-      {t:"Clear costly debt", d:"Credit cards and personal loans charge 14–40%. No investment beats that.", ok: bd<=0, miss: inr(bd)+" to clear"},
+      {t:"Clear costly loans", d:"Loans and card dues above 10% interest. Paying them off is a guaranteed return no fund can promise.", ok: costlyBal<=0, miss: inr(costlyBal)+" to clear"},
       {t:"Retirement SIP", d:"Invest "+inr(req,false)+" a month to retire at "+p.R+".", ok: p.sip>=req, miss: inr(Math.max(0,req-p.sip),false)+"/mo more"},
       {t:"Goal SIPs", d:"Separate SIPs for each goal below, so you don't dip into retirement money.", ok: null}
     ];
@@ -531,8 +716,8 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
     });
 
     // Total
-    var surplus = p.inc - p.E;
-    var totalNeed = req + goalTotal + (em < emTarget ? (emTarget-em)/12 : 0);
+    var surplus = p.inc - p.E - totalEmi;
+    var totalNeed = req + goalTotal + (em < emTarget ? (emTarget-em)/12 : 0) + (totalBal>0 ? extra : 0) + goldSave;
     var pctUse = surplus > 0 ? totalNeed / surplus : 2;
     var col = pctUse <= 0.85 ? "var(--good)" : pctUse <= 1 ? "var(--warn)" : "var(--bad)";
     var verdict = surplus <= 0 ? "Your expenses are higher than your income. Cutting costs comes first."
@@ -543,13 +728,118 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
     $("total").innerHTML =
       '<div class="total-line"><span>Retirement SIP</span><span>'+inr(req,false)+'</span></div>'+
       '<div class="total-line"><span>Goal SIPs</span><span>'+inr(goalTotal,false)+'</span></div>'+
+      (totalBal>0 && extra>0 ? '<div class="total-line"><span>Extra loan prepayment</span><span>'+inr(extra,false)+'</span></div>' : '')+
+      (goldSave>0 ? '<div class="total-line"><span>Set aside for gold loan repayment</span><span>'+inr(goldSave,false)+'</span></div>' : '')+
       (em<emTarget ? '<div class="total-line"><span>Build emergency fund (over 12 months)</span><span>'+inr((emTarget-em)/12,false)+'</span></div>' : '')+
       '<div class="total-line sum"><span>Total each month</span><span>'+inr(totalNeed,false)+'</span></div>'+
-      '<div class="total-line"><span>You can save (income − expenses)</span><span>'+inr(surplus,false)+' · '+savRate+'% of income</span></div>'+
+      '<div class="total-line"><span>You can save (income − expenses − EMIs)</span><span>'+inr(surplus,false)+' · '+savRate+'% of income</span></div>'+
       '<div class="meter" aria-hidden="true"><span style="width:'+Math.min(100,Math.round(pctUse*100))+'%;background:'+col+'"></span></div>'+
       '<p style="color:'+col+';font-weight:600;font-size:.9rem">'+verdict+'</p>';
 
+    renderSpend(costlyBal);
     save();
+  }
+
+  // ---------- Expenses ----------
+  var view = new Date(); view.setDate(1);
+  function ymOf(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
+  function sumMonth(ym){ return (S.tx||[]).filter(function(t){ return t.d.slice(0,7)===ym; }).reduce(function(s,t){ return s+n(t.a); },0); }
+  var FIT = {
+    "Fuel":"a fuel card from an oil company or bank. It waives the 1% fuel surcharge and gives extra points at the pump.",
+    "Shopping":"an online shopping cashback card, ideally linked to the app or site you buy from most.",
+    "Groceries":"a cashback card that pays on groceries and everyday spends.",
+    "Bills & recharges":"a cashback card that pays on bill payments and recharges.",
+    "Eating out":"a dining or food-delivery rewards card.",
+    "Travel":"a travel card with air miles or lounge access, but only if you travel several times a year.",
+    "Health":"a simple cashback card on all spends. Health spends rarely earn bonus rewards.",
+    "Family & gifts":"a simple cashback card on all spends.",
+    "Other":"a simple cashback card on all spends."
+  };
+  function renderSpend(costlyBal){
+    var now = new Date(), ym = ymOf(view), isNow = ym === ymOf(now);
+    $("mLabel").textContent = view.toLocaleDateString("en-IN",{month:"long",year:"numeric"});
+    $("mNext").disabled = isNow;
+    $("txSampleNote").hidden = !S.txSample;
+    var tx = (S.tx||[]).filter(function(t){ return t.d.slice(0,7)===ym; }).sort(function(a,b){ return b.d.localeCompare(a.d); });
+    var total = 0, by = {};
+    tx.forEach(function(t){ total += n(t.a); by[t.c] = (by[t.c]||0) + n(t.a); });
+    // 3-month average of past full months that have entries
+    var past = [];
+    for (var k=1; k<=3; k++){ var v = sumMonth(ymOf(new Date(now.getFullYear(), now.getMonth()-k, 1))); if (v>0) past.push(v); }
+    var avg = past.length ? past.reduce(function(a,b){return a+b;},0)/past.length : 0;
+    var plan = Math.max(0, n(S.expense));
+    var kv = '<div><strong>'+inr(total,false)+'</strong><span>Spent in '+view.toLocaleDateString("en-IN",{month:"long"})+'</span></div>';
+    if (isNow && plan > 0){
+      var left = plan - total;
+      kv += '<div><strong style="color:'+(left<0?'var(--bad)':'var(--good)')+'">'+(left<0 ? inr(-left,false)+' over' : inr(left,false)+' left')+'</strong><span>Against your plan of '+inr(plan,false)+' a month</span></div>';
+    }
+    kv += '<div><strong>'+(avg ? inr(avg,false) : '–')+'</strong><span>'+(avg ? 'Average of last '+past.length+' month'+(past.length>1?'s':'') : 'Log a full month to see your average')+'</span>'+
+      (avg && Math.abs(avg-plan) > 500 ? '<button type="button" id="useAvg">Use as my monthly expenses</button>' : '')+'</div>';
+    $("spendKv").innerHTML = kv;
+
+    var cats = Object.keys(by).sort(function(a,b){ return by[b]-by[a]; });
+    $("catBars").innerHTML = cats.length ? cats.map(function(c){
+      var pct = total ? by[c]/total*100 : 0;
+      return '<div class="catrow"><span>'+c+'</span><span>'+inr(by[c],false)+' · '+Math.round(pct)+'%</span><div class="bar"><span style="width:'+pct.toFixed(1)+'%"></span></div></div>';
+    }).join("") : '<p class="muted">Nothing logged for this month yet. Add your first expense above.</p>';
+
+    $("txListWrap").querySelector("summary").textContent = "Entries this month (" + tx.length + ")";
+    $("txList").innerHTML = tx.map(function(t){
+      var d = new Date(t.d+"T00:00:00");
+      var note = String(t.note||"").replace(/[&<>"]/g, function(ch){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]; });
+      return '<div class="txrow"><span class="muted">'+d.toLocaleDateString("en-IN",{day:"numeric",month:"short"})+'</span><span>'+(note||t.c)+(note?'<small>'+t.c+'</small>':'')+'</span><b>'+inr(n(t.a),false)+'</b><button type="button" data-tx="'+t.id+'" aria-label="Delete entry">✕</button></div>';
+    }).join("") || '<p class="muted" style="padding-top:8px">No entries.</p>';
+
+    // Card fit from the last 3 months, rent excluded (cards charge a fee on rent)
+    var from = ymd(new Date(now.getFullYear(), now.getMonth()-2, 1)), cby = {}, ctot = 0;
+    var mset = {};
+    (S.tx||[]).forEach(function(t){ if (t.d >= from && t.c !== "Rent"){ cby[t.c] = (cby[t.c]||0) + n(t.a); ctot += n(t.a); mset[t.d.slice(0,7)] = 1; } });
+    var mcount = Math.max(1, Object.keys(mset).length);
+    var top = Object.keys(cby).sort(function(a,b){ return cby[b]-cby[a]; });
+    var cf = '<h3>Which credit card suits you</h3>';
+    if (!top.length){
+      cf += '<p class="muted">Log a few weeks of spending and this will show which type of card earns you the most.</p>';
+    } else {
+      var t1 = top[0], share = Math.round(cby[t1]/ctot*100);
+      cf += '<p>Your biggest card-friendly spend is <b>'+t1+'</b> ('+share+'% of recent spends, rent left out). The best fit is '+FIT[t1]+'</p>';
+      if (top[1]) cf += '<p class="muted">Next biggest: '+top[1]+' ('+Math.round(cby[top[1]]/ctot*100)+'%). A card that rewards both is a bonus.</p>';
+      cf += '<p class="muted">Monthly card-friendly spend: about '+inr(ctot/mcount,false)+'. Choose a card whose annual fee is waived at this spend, or one with no fee at all.</p>';
+    }
+    cf += costlyBal > 0
+      ? '<p style="color:var(--warn);font-weight:600">You have loans above 10% interest. Stick to one card with no annual fee, and only if you can pay the full bill every month.</p>'
+      : '';
+    cf += '<ul class="rules"><li>Always pay the <b>total due</b>, never the minimum. Card interest is around 40% a year.</li><li>Set up autopay for the full amount from your salary account.</li><li>Keep spending under 30% of your card limit. It helps your credit score.</li><li>Never withdraw cash on a credit card. Interest starts that day.</li></ul>';
+    $("cardFit").innerHTML = cf;
+  }
+  function initSpend(){
+    $("txCat").innerHTML = CATS.map(function(c){ return '<option>'+c+'</option>'; }).join("");
+    $("txCat").value = "Groceries";
+    $("txDate").value = ymd(new Date()); $("txDate").max = ymd(new Date());
+    $("txForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      var a = n($("txAmt").value);
+      if (a <= 0){ $("txAmt").focus(); return; }
+      if (S.txSample){ S.tx = []; S.txSample = false; }
+      var d = $("txDate").value || ymd(new Date());
+      S.tx.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6), d:d, a:a, c:$("txCat").value, note:$("txNote").value.trim()});
+      $("txAmt").value = ""; $("txNote").value = "";
+      view = new Date(d+"T00:00:00"); view.setDate(1);
+      render(); $("txAmt").focus();
+    });
+    $("mPrev").addEventListener("click", function(){ view.setMonth(view.getMonth()-1); render(); });
+    $("mNext").addEventListener("click", function(){ view.setMonth(view.getMonth()+1); render(); });
+    $("txList").addEventListener("click", function(e){
+      var b = e.target.closest("[data-tx]"); if (!b) return;
+      S.tx = S.tx.filter(function(t){ return t.id !== b.dataset.tx; }); render();
+    });
+    $("spendKv").addEventListener("click", function(e){
+      if (!e.target.closest("#useAvg")) return;
+      var now = new Date(), past = [];
+      for (var k=1;k<=3;k++){ var v = sumMonth(ymOf(new Date(now.getFullYear(), now.getMonth()-k, 1))); if (v>0) past.push(v); }
+      if (!past.length) return;
+      S.expense = Math.round(past.reduce(function(a,b){return a+b;},0)/past.length/100)*100;
+      $("expense").value = S.expense; isExample = false; render();
+    });
   }
 
   // ---------- Wire up ----------
@@ -572,15 +862,29 @@ ol.ladder li p{font-size:.82rem;color:var(--muted)}
     S.goals.push({name:"New goal", cost:500000, years:5}); isExample=false; renderGoals(); render();
     var inp = $("g"+(S.goals.length-1)+"n"); if (inp){ inp.focus(); inp.select(); }
   });
+  $("loans").addEventListener("input", function(e){
+    var t = e.target; if (!t.dataset || t.dataset.l === undefined) return;
+    S.loans[+t.dataset.l][t.dataset.k] = t.value; isExample = false;
+    if (t.dataset.k === "kind"){ var l = S.loans[+t.dataset.l]; if (l.kind==="gold" && !l.months) l.months = 12; renderLoans(); }
+    render();
+  });
+  $("loans").addEventListener("click", function(e){
+    var d = e.target.closest("[data-dell]"); if (!d) return;
+    S.loans.splice(+d.dataset.dell, 1); isExample = false; renderLoans(); render();
+  });
+  $("addLoan").addEventListener("click", function(){
+    S.loans.push({name:"New loan", kind:"emi", orig:100000, bal:100000, rate:12, emi:3000}); isExample = false; renderLoans(); render();
+    var inp = $("l"+(S.loans.length-1)+"n"); if (inp){ inp.focus(); inp.select(); }
+  });
   var armed = false;
   $("resetBtn").addEventListener("click", function(){
     var b = $("resetBtn");
     if (!armed){ armed = true; b.textContent = "Tap again to erase your numbers"; setTimeout(function(){armed=false;b.textContent="Reset to example";},3000); return; }
     armed=false; b.textContent="Reset to example";
-    S = clone(EX); isExample = true; fillForm(); renderGoals(); render();
+    S = clone(EX); S.tx = sampleTx(); isExample = true; fillForm(); renderGoals(); renderLoans(); render();
   });
 
-  fillForm(); renderGoals(); render();
+  fillForm(); renderGoals(); renderLoans(); initSpend(); render();
 })();
 </script>
 
