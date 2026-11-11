@@ -1,5 +1,5 @@
 // Offline support: cache the app shell, serve from cache, refresh in background.
-const CACHE = "freedom-plan-v2";
+const CACHE = "freedom-plan-v3";
 const SHELL = ["./", "index.html", "manifest.webmanifest",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png"];
 
