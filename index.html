@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Freedom Plan</title>
+<meta name="description" content="Personal retirement and investment planner">
+<meta name="theme-color" content="#0E6A4E" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D1512" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Freedom Plan">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+/* Layout: single mobile-first column; answer first, then inputs, then the detail that explains it */
+:root{
+  --bg:#F2F5F1; --surface:#FFFFFF; --ink:#13241D; --muted:#5A6A62; --line:#D9E1DB;
+  --accent:#0E6A4E; --accent-soft:#E0EEE6; --marigold:#D88A10;
+  --good:#1D8657; --warn:#B87309; --bad:#BE3E2A;
+  --good-soft:#E1F1E8; --warn-soft:#FBEFD9; --bad-soft:#F8E3DF;
+  --display:"Sora",ui-sans-serif,system-ui,sans-serif;
+  --body:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1512; --surface:#141F1A; --ink:#E6EEE9; --muted:#93A49B; --line:#26352E;
+  --accent:#5CC79C; --accent-soft:#17302A; --marigold:#F0B04A;
+  --good:#5CC79C; --warn:#F0B04A; --bad:#F27D69;
+  --good-soft:#163026; --warn-soft:#33280F; --bad-soft:#36191A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1512; --surface:#141F1A; --ink:#E6EEE9; --muted:#93A49B; --line:#26352E;
+  --accent:#5CC79C; --accent-soft:#17302A; --marigold:#F0B04A;
+  --good:#5CC79C; --warn:#F0B04A; --bad:#F27D69;
+  --good-soft:#163026; --warn-soft:#33280F; --bad-soft:#36191A; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px;
+  font-variant-numeric:tabular-nums}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-0.01em}
+h2{font-size:1.25rem}
+h3{font-size:1rem}
+p{margin:0}
+.muted{color:var(--muted)}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+section{display:flex;flex-direction:column;gap:14px}
+.sec-head{display:flex;flex-direction:column;gap:4px}
+
+header.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+header.top h1{font-size:1.1rem}
+.badge{font-size:.75rem;padding:3px 10px;border-radius:999px;background:var(--warn-soft);color:var(--warn);font-weight:600}
+
+/* Hero answer */
+.hero{background:var(--accent);color:var(--bg);border-radius:20px;padding:22px 20px;display:flex;flex-direction:column;gap:18px}
+.hero .eyebrow{color:inherit;opacity:.8}
+.hero-big{font-family:var(--display);font-size:clamp(2.2rem,9vw,3.2rem);font-weight:700;line-height:1.05}
+.hero-sub{opacity:.9;max-width:52ch}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;border-top:1px solid color-mix(in srgb,var(--bg) 30%,transparent);padding-top:16px}
+.hero-grid div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hero-grid strong{font-family:var(--display);font-size:1.3rem;font-weight:600}
+.hero-grid span{font-size:.8rem;opacity:.85}
+
+/* Form */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+details.panel>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--display);font-weight:600}
+details.panel>summary::-webkit-details-marker{display:none}
+details.panel>summary::after{content:"Show";font-family:var(--body);font-size:.8rem;color:var(--accent);font-weight:600}
+details.panel[open]>summary::after{content:"Hide"}
+.fgroup{display:flex;flex-direction:column;gap:10px;padding-top:14px}
+.fgroup + .fgroup{border-top:1px solid var(--line);margin-top:14px}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);min-width:0}
+label.f input,label.f select,.goal input{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+label.f input:focus,label.f select:focus,.goal input:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.hint{font-size:.72rem;color:var(--muted)}
+.row-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-top:14px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;font-weight:600;font-size:.85rem}
+button.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+button.link{border:none;background:none;color:var(--accent);padding:4px 0}
+
+/* Chart */
+.chart-box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 10px 8px}
+.chart-box svg{width:100%;height:auto;display:block}
+.chart-box .axis{fill:var(--muted);font-size:11px;font-family:var(--body)}
+.chart-box .grid{stroke:var(--line);stroke-width:1}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);padding:6px 6px 4px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+
+/* Stats list */
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.kv div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kv strong{font-family:var(--display);font-size:1.15rem}
+.kv span{font-size:.8rem;color:var(--muted)}
+
+/* Allocation */
+.stack{display:flex;height:16px;border-radius:999px;overflow:hidden;background:var(--line)}
+.stack span{display:block;height:100%}
+.alloc{display:flex;flex-direction:column;gap:2px}
+.alloc-row{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}
+.alloc-row:last-child{border-bottom:none}
+.dot{width:10px;height:10px;border-radius:3px;margin-top:6px}
+.alloc-row b{font-weight:600}
+.alloc-row .amt{text-align:right;font-weight:600;white-space:nowrap}
+.alloc-row .amt small{display:block;font-weight:400;color:var(--muted);font-size:.75rem}
+.alloc-row p{font-size:.82rem;color:var(--muted)}
+
+/* Ladder */
+ol.ladder{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:step}
+ol.ladder li{counter-increment:step;display:grid;grid-template-columns:30px 1fr auto;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+ol.ladder li::before{content:counter(step);font-family:var(--display);font-weight:600;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line);font-size:.85rem}
+ol.ladder li.next{border-color:var(--marigold);box-shadow:0 0 0 1px var(--marigold) inset}
+ol.ladder li.done::before{background:var(--good-soft);color:var(--good);border-color:transparent}
+ol.ladder li div{min-width:0;display:flex;flex-direction:column;gap:2px}
+ol.ladder li p{font-size:.82rem;color:var(--muted)}
+.chip{font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.chip.good{background:var(--good-soft);color:var(--good)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.chip.next{background:var(--warn-soft);color:var(--warn)}
+
+/* Goals */
+.goals{display:flex;flex-direction:column;gap:10px}
+.goal{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:2fr 1.3fr .8fr auto;gap:8px;align-items:end}
+.goal label{display:flex;flex-direction:column;gap:3px;font-size:.72rem;color:var(--muted);min-width:0}
+.goal .res{grid-column:1/-1;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.85rem;border-top:1px dashed var(--line);padding-top:8px}
+.goal .res b{font-family:var(--display)}
+.goal button{padding:9px 10px}
+@media (max-width:480px){.goal{grid-template-columns:1fr 1fr}.goal label:first-child{grid-column:1/-1}}
+
+.total{display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.total-line{display:flex;justify-content:space-between;gap:12px;font-size:.92rem}
+.total-line.sum{border-top:1px solid var(--line);padding-top:10px;font-weight:600}
+.total-line.sum span:last-child{font-family:var(--display);font-size:1.15rem}
+.meter{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.meter span{display:block;height:100%;border-radius:999px}
+
+.note{font-size:.78rem;color:var(--muted);line-height:1.55;border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion:no-preference){.meter span,.stack span{transition:width .3s ease}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <h1>My Freedom Plan</h1>
+    <span class="badge" id="exBadge">Example numbers. Replace with yours</span>
+  </header>
+
+  <!-- Answer first -->
+  <div class="hero" aria-live="polite">
+    <div>
+      <div class="eyebrow">On your current plan</div>
+      <div class="hero-big" id="hBig">Retire at 52</div>
+    </div>
+    <p class="hero-sub" id="hSub"></p>
+    <div class="hero-grid">
+      <div><strong id="hNeed">–</strong><span id="hNeedL">Corpus you need</span></div>
+      <div><strong id="hSip">–</strong><span id="hSipL">Monthly SIP needed</span></div>
+      <div><strong id="hFire">–</strong><span>FIRE number in today's money</span></div>
+    </div>
+  </div>
+
+  <!-- Inputs -->
+  <details class="panel" id="formPanel" open>
+    <summary>Your numbers</summary>
+    <div class="fgroup">
+      <div class="eyebrow">About you</div>
+      <div class="fields">
+        <label class="f">Your age<input id="age" type="number" inputmode="numeric" min="18" max="70"></label>
+        <label class="f">Want to retire at<input id="retireAge" type="number" inputmode="numeric" min="30" max="75"></label>
+        <label class="f">Plan money till age<input id="life" type="number" inputmode="numeric" min="60" max="100"><span class="hint">85–90 is safe</span></label>
+        <label class="f">Risk comfort<select id="risk"><option value="low">Low: hate seeing losses</option><option value="mid">Medium: can sit through dips</option><option value="high">High: long horizon, stay calm</option></select></label>
+      </div>
+    </div>
+    <div class="fgroup">
+      <div class="eyebrow">Monthly money</div>
+      <div class="fields">
+        <label class="f">Take-home income (₹/month)<input id="income" type="number" inputmode="numeric" min="0" step="1000"></label>
+        <label class="f">Expenses (₹/month)<input id="expense" type="number" inputmode="numeric" min="0" step="1000"><span class="hint">Include rent/EMI</span></label>
+        <label class="f">Investing now (₹/month)<input id="sip" type="number" inputmode="numeric" min="0" step="500"><span class="hint">SIPs, EPF, PPF, NPS</span></label>
+        <label class="f">Raise SIP each year (%)<input id="step" type="number" inputmode="decimal" min="0" max="30" step="1"><span class="hint">Step-up with salary hikes</span></label>
+      </div>
+    </div>
+    <div class="fgroup">
+      <div class="eyebrow">What you have today</div>
+      <div class="fields">
+        <label class="f">Investments saved (₹)<input id="corpus" type="number" inputmode="numeric" min="0" step="10000"><span class="hint">MF, stocks, EPF, PPF. Not your home</span></label>
+        <label class="f">Emergency fund (₹)<input id="emergency" type="number" inputmode="numeric" min="0" step="10000"><span class="hint">Savings/FD/liquid fund</span></label>
+        <label class="f">Health cover (₹)<input id="health" type="number" inputmode="numeric" min="0" step="100000"></label>
+        <label class="f">Term life cover (₹)<input id="term" type="number" inputmode="numeric" min="0" step="500000"></label>
+        <label class="f">Anyone depends on your income?<select id="deps"><option value="yes">Yes</option><option value="no">No</option></select></label>
+        <label class="f">Credit card / personal loan due (₹)<input id="badDebt" type="number" inputmode="numeric" min="0" step="1000"></label>
+      </div>
+    </div>
+    <details class="fgroup" id="assump">
+      <summary class="eyebrow" style="cursor:pointer">Assumptions (tap to change)</summary>
+      <div class="fields" style="margin-top:10px">
+        <label class="f">Return before retiring (%/yr)<input id="ret" type="number" inputmode="decimal" min="1" max="20" step="0.5"><span class="hint">10–12% for equity-heavy</span></label>
+        <label class="f">Return after retiring (%/yr)<input id="postRet" type="number" inputmode="decimal" min="1" max="15" step="0.5"><span class="hint">7–8% for a safer mix</span></label>
+        <label class="f">Inflation (%/yr)<input id="infl" type="number" inputmode="decimal" min="1" max="15" step="0.5"><span class="hint">6% is a fair long-run guess</span></label>
+      </div>
+    </details>
+    <div class="row-actions">
+      <span class="hint" id="saveNote">Your numbers stay on this device.</span>
+      <button class="link" id="resetBtn" type="button">Reset to example</button>
+    </div>
+  </details>
+
+  <!-- Retirement -->
+  <section id="retire">
+    <div class="sec-head">
+      <div class="eyebrow">Retirement</div>
+      <h2>How your money grows and lasts</h2>
+    </div>
+    <div class="chart-box">
+      <svg id="chart" viewBox="0 0 640 280" role="img" aria-label="Projected investment value by age"></svg>
+      <div class="legend">
+        <span><i style="background:var(--muted)"></i>Your current SIP</span>
+        <span><i style="background:var(--accent)"></i>SIP needed for your target age</span>
+      </div>
+    </div>
+    <div class="kv" id="retireKv"></div>
+  </section>
+
+  <!-- Where to invest -->
+  <section id="where">
+    <div class="sec-head">
+      <div class="eyebrow">Where to invest</div>
+      <h2>Your monthly ₹<span id="allocTotal">–</span>, split by asset</h2>
+      <p class="muted" id="allocWhy"></p>
+    </div>
+    <div class="stack" id="allocBar"></div>
+    <div class="panel alloc" id="allocList"></div>
+  </section>
+
+  <!-- Ladder -->
+  <section id="ladder">
+    <div class="sec-head">
+      <div class="eyebrow">Money order of operations</div>
+      <h2>Do these in order</h2>
+      <p class="muted">Each step protects the next one. Fix the first one that is not done.</p>
+    </div>
+    <ol class="ladder" id="ladderList"></ol>
+  </section>
+
+  <!-- Goals -->
+  <section id="goalsSec">
+    <div class="sec-head">
+      <div class="eyebrow">Other goals</div>
+      <h2>Car, house, kids, travel</h2>
+      <p class="muted">Enter today's price. The plan adds inflation and picks a safer return for short goals.</p>
+    </div>
+    <div class="goals" id="goals"></div>
+    <div><button type="button" id="addGoal">Add a goal</button></div>
+  </section>
+
+  <!-- Total -->
+  <section id="totalSec">
+    <div class="sec-head">
+      <div class="eyebrow">This month</div>
+      <h2>Can your income carry the plan?</h2>
+    </div>
+    <div class="total" id="total"></div>
+  </section>
+
+  <p class="note">This is a planning calculator for learning, not investment advice. Returns are assumptions, and real markets go up and down. Fund categories are shown, not specific funds. For personal advice, speak to a SEBI-registered investment adviser (RIA). Check current tax rules before choosing old or new regime products like PPF, ELSS or NPS.</p>
+</div>
+
+<script>
+(function(){
+  var KEY = "freedom-plan-v1";
+  var EX = {
+    age:30, retireAge:55, life:85, risk:"mid",
+    income:120000, expense:50000, sip:20000, step:10,
+    corpus:800000, emergency:200000, health:500000, term:5000000, deps:"yes", badDebt:0,
+    ret:12, postRet:7.5, infl:6,
+    goals:[
+      {name:"Car", cost:800000, years:4},
+      {name:"Child's education", cost:2500000, years:15}
+    ]
+  };
+  var FIELDS = ["age","retireAge","life","risk","income","expense","sip","step","corpus","emergency","health","term","deps","badDebt","ret","postRet","infl"];
+  var S, isExample = true;
+
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function load(){
+    try { var raw = localStorage.getItem(KEY); if(raw){ var o = JSON.parse(raw); isExample = !!o._ex; return Object.assign(clone(EX), o); } } catch(e){}
+    return null;
+  }
+  function save(){
+    try { var o = clone(S); o._ex = isExample; localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){
+      document.getElementById("saveNote").textContent = "This browser won't save your numbers. Keep a note of them.";
+    }
+  }
+  S = load() || clone(EX);
+
+  function n(v){ v = parseFloat(v); return isFinite(v) ? v : 0; }
+  function clamp(v,a,b){ return Math.min(b, Math.max(a, v)); }
+
+  // Indian formatting: lakh and crore
+  function inr(x, short){
+    x = Math.round(x || 0);
+    var neg = x < 0; x = Math.abs(x);
+    var s;
+    if (x >= 1e7) s = "₹" + (x/1e7).toFixed(x >= 1e9 ? 0 : 2).replace(/\.00$/,"") + " Cr";
+    else if (x >= 1e5) s = "₹" + (x/1e5).toFixed(x >= 1e7 ? 0 : 1).replace(/\.0$/,"") + " L";
+    else s = "₹" + x.toLocaleString("en-IN");
+    if (short === false) s = "₹" + x.toLocaleString("en-IN");
+    return (neg ? "−" : "") + s;
+  }
+  function inrNum(x){ return Math.round(x).toLocaleString("en-IN"); }
+
+  // ---------- Core maths ----------
+  function P(){
+    var age = clamp(Math.round(n(S.age)),18,75);
+    var life = clamp(Math.round(n(S.life)), age+2, 105);
+    var R = clamp(Math.round(n(S.retireAge)), age+1, life-1);
+    return {
+      age:age, life:life, R:R,
+      E:Math.max(0,n(S.expense)), inc:Math.max(0,n(S.income)),
+      sip:Math.max(0,n(S.sip)), step:n(S.step)/100,
+      corpus:Math.max(0,n(S.corpus)),
+      r:n(S.ret)/100, rp:n(S.postRet)/100, i:n(S.infl)/100
+    };
+  }
+  // Corpus needed at retirement age R: expenses (inflated) paid at the start of each year until 'life'
+  function needAt(p, R){
+    var years = R - p.age;
+    var A = p.E * 12 * Math.pow(1+p.i, years);
+    var m = Math.max(1, p.life - R);
+    var f = Math.abs(p.rp - p.i) < 1e-6 ? m : (1 - Math.pow((1+p.i)/(1+p.rp), m)) / (p.rp - p.i) * (1+p.rp);
+    return A * f;
+  }
+  // Value at age R with a starting monthly SIP that steps up each year
+  function projAt(p, R, sip0){
+    var months = (R - p.age) * 12, bal = p.corpus, rm = Math.pow(1+p.r, 1/12) - 1, s = sip0;
+    for (var k=1; k<=months; k++){ bal = bal*(1+rm) + s; if (k%12===0) s *= (1+p.step); }
+    return bal;
+  }
+  function earliest(p){
+    for (var R=p.age+1; R<p.life; R++){ if (projAt(p,R,p.sip) >= needAt(p,R)) return R; }
+    return null;
+  }
+  function reqSip(p, R){
+    var need = needAt(p,R);
+    if (projAt(p,R,0) >= need) return 0;
+    var lo=0, hi=1e8;
+    for (var k=0;k<60;k++){ var mid=(lo+hi)/2; if (projAt(p,R,mid) >= need) hi=mid; else lo=mid; }
+    return hi;
+  }
+  // Year-by-year path: grow until R, then withdraw inflating expenses
+  function path(p, R, sip0){
+    var pts=[], bal=p.corpus, rm=Math.pow(1+p.r,1/12)-1, s=sip0, runOut=null;
+    pts.push({a:p.age, v:bal});
+    for (var a=p.age+1; a<=p.life; a++){
+      if (a <= R){
+        for (var m=0;m<12;m++) bal = bal*(1+rm) + s;
+        s *= (1+p.step);
+      } else {
+        var exp = p.E*12*Math.pow(1+p.i, a-1-p.age);
+        bal = (bal - exp) * (1+p.rp);
+        if (bal <= 0){ if (runOut===null) runOut = a; bal = 0; }
+      }
+      pts.push({a:a, v:bal});
+    }
+    return {pts:pts, runOut:runOut};
+  }
+  function fvSip(target, years, annual){
+    var mths = Math.max(1, Math.round(years*12)), rm = Math.pow(1+annual,1/12)-1;
+    return target * rm / (Math.pow(1+rm, mths) - 1);
+  }
+  function goalReturn(y){ return y < 3 ? 0.065 : (y < 7 ? 0.09 : n(S.ret)/100); }
+  function goalWhere(y){ return y < 3 ? "FD, RD or liquid fund" : (y < 7 ? "Hybrid / balanced advantage fund" : "Equity index fund"); }
+
+  // ---------- Render ----------
+  var $ = function(id){ return document.getElementById(id); };
+
+  function renderGoals(){
+    var box = $("goals"); box.innerHTML = "";
+    S.goals.forEach(function(g, idx){
+      var el = document.createElement("div"); el.className = "goal";
+      el.innerHTML =
+        '<label>Goal<input id="g'+idx+'n" data-g="'+idx+'" data-k="name" type="text" value=""></label>'+
+        '<label>Cost today (₹)<input id="g'+idx+'c" data-g="'+idx+'" data-k="cost" type="number" inputmode="numeric" min="0" step="10000"></label>'+
+        '<label>In years<input id="g'+idx+'y" data-g="'+idx+'" data-k="years" type="number" inputmode="numeric" min="1" max="40"></label>'+
+        '<button type="button" data-del="'+idx+'" aria-label="Remove goal">Remove</button>'+
+        '<div class="res" id="g'+idx+'r"></div>';
+      box.appendChild(el);
+      el.querySelector('[data-k="name"]').value = g.name;
+      el.querySelector('[data-k="cost"]').value = g.cost;
+      el.querySelector('[data-k="years"]').value = g.years;
+    });
+  }
+
+  function chart(p, curPath, tgtPath, needR){
+    var W=640,H=280,L=52,Rt=14,T=16,B=30;
+    var all = curPath.pts.concat(tgtPath.pts).map(function(d){return d.v;}).concat([needR]);
+    var maxV = Math.max.apply(null, all) || 1;
+    // nice ceiling
+    var pow = Math.pow(10, Math.floor(Math.log10(maxV)));
+    var steps=[1,2,2.5,5,10], tick=pow;
+    for (var i=0;i<steps.length;i++){ if (maxV/(steps[i]*pow) <= 5){ tick=steps[i]*pow; break; } }
+    var top = Math.ceil(maxV/tick)*tick;
+    var x = function(a){ return L + (a-p.age)/(p.life-p.age)*(W-L-Rt); };
+    var y = function(v){ return T + (1 - v/top)*(H-T-B); };
+    var g = "";
+    for (var v=0; v<=top+1; v+=tick){
+      g += '<line class="grid" x1="'+L+'" x2="'+(W-Rt)+'" y1="'+y(v)+'" y2="'+y(v)+'"/>';
+      g += '<text class="axis" x="'+(L-6)+'" y="'+(y(v)+4)+'" text-anchor="end">'+(v===0?"0":inr(v))+'</text>';
+    }
+    var span = p.life-p.age, at = span>40?10:5;
+    var first = Math.ceil(p.age/at)*at;
+    for (var a=first; a<=p.life; a+=at){
+      g += '<text class="axis" x="'+x(a)+'" y="'+(H-10)+'" text-anchor="middle">'+a+'</text>';
+    }
+    g += '<text class="axis" x="'+(W-Rt)+'" y="'+(H-10)+'" text-anchor="end" dy="0" style="display:none">age</text>';
+    // retirement marker
+    g += '<line x1="'+x(p.R)+'" x2="'+x(p.R)+'" y1="'+T+'" y2="'+(H-B)+'" stroke="var(--marigold)" stroke-dasharray="4 4" stroke-width="1.5"/>';
+    g += '<text class="axis" x="'+(x(p.R)+5)+'" y="'+(T+10)+'" style="fill:var(--marigold);font-weight:600">Retire '+p.R+'</text>';
+    function line(pts){ return pts.map(function(d,i){return (i?"L":"M")+x(d.a).toFixed(1)+" "+y(d.v).toFixed(1);}).join(" "); }
+    var tl = line(tgtPath.pts);
+    var area = tl + " L"+x(p.life)+" "+y(0)+" L"+x(p.age)+" "+y(0)+" Z";
+    g += '<path d="'+area+'" fill="var(--accent)" fill-opacity="0.12"/>';
+    g += '<path d="'+line(curPath.pts)+'" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>';
+    g += '<path d="'+tl+'" fill="none" stroke="var(--accent)" stroke-width="2.5"/>';
+    // needed-corpus dot
+    g += '<circle cx="'+x(p.R)+'" cy="'+y(needR)+'" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';
+    if (curPath.runOut){
+      g += '<circle cx="'+x(curPath.runOut)+'" cy="'+y(0)+'" r="4.5" fill="var(--bad)"/>';
+      var lx = Math.min(x(curPath.runOut), W-Rt-90);
+      g += '<text class="axis" x="'+lx+'" y="'+(y(0)-8)+'" style="fill:var(--bad);font-weight:600">Runs out at '+curPath.runOut+'</text>';
+    }
+    $("chart").innerHTML = g;
+  }
+
+  function render(){
+    var p = P();
+    var need = needAt(p, p.R);
+    var req = reqSip(p, p.R);
+    var early = earliest(p);
+    var projCur = projAt(p, p.R, p.sip);
+    var fire = p.E*12*Math.pow(1+p.i,0) * (need / (p.E*12*Math.pow(1+p.i,p.R-p.age) || 1));
+    var cur = path(p, p.R, p.sip), tgt = path(p, p.R, Math.max(req, 0));
+
+    // Hero
+    $("exBadge").hidden = !isExample;
+    if (early){
+      $("hBig").textContent = "Retire at " + early;
+      $("hSub").textContent = early <= p.R
+        ? "Investing " + inr(p.sip,false) + " a month with a " + Math.round(p.step*100) + "% yearly raise, you can stop working at " + early + ", which is " + (p.R-early) + " years before your target of " + p.R + "."
+        : "Investing " + inr(p.sip,false) + " a month with a " + Math.round(p.step*100) + "% yearly raise gets you there at " + early + ". To retire at " + p.R + " instead, invest " + inr(req,false) + " a month.";
+    } else {
+      $("hBig").textContent = "Not on track yet";
+      $("hSub").textContent = "At " + inr(p.sip,false) + " a month, your money won't cover expenses until age " + p.life + ". Invest " + inr(req,false) + " a month to retire at " + p.R + ".";
+    }
+    $("hNeed").textContent = inr(need);
+    $("hNeedL").textContent = "Corpus you need at " + p.R;
+    $("hSip").textContent = inr(req, false);
+    $("hSipL").textContent = "Monthly SIP to retire at " + p.R;
+    $("hFire").textContent = inr(fire);
+
+    // Chart + key numbers
+    chart(p, cur, tgt, need);
+    var gap = need - projCur;
+    var expR = p.E*Math.pow(1+p.i,p.R-p.age);
+    $("retireKv").innerHTML =
+      '<div><strong>'+inr(expR,false)+'</strong><span>Your '+inr(p.E,false)+' monthly expenses at age '+p.R+', after inflation</span></div>'+
+      '<div><strong>'+inr(projCur)+'</strong><span>What your current SIP builds by '+p.R+'</span></div>'+
+      '<div><strong style="color:'+(gap>0?'var(--bad)':'var(--good)')+'">'+(gap>0?inr(gap)+" short":inr(-gap)+" extra")+'</strong><span>Gap at '+p.R+' versus what you need</span></div>'+
+      '<div><strong>'+(cur.runOut? "Age "+cur.runOut : "Past "+p.life)+'</strong><span>How long your money lasts on the current SIP</span></div>';
+
+    // Allocation
+    var monthly = Math.max(req, p.sip);
+    var yrs = p.R - p.age;
+    var adj = {low:-15, mid:0, high:10}[S.risk] || 0;
+    var eq = clamp(100 - p.age + adj, 20, 85);
+    if (yrs < 5) eq = Math.min(eq, 35); else if (yrs < 10) eq = Math.min(eq, 55);
+    var gold = 10, debt = 100 - eq - gold;
+    var eqSplit = S.risk==="high" ? [40,30,30] : S.risk==="low" ? [65,35,0] : [50,35,15];
+    var rows = [
+      {c:"var(--accent)", name:"Nifty 50 / Sensex index fund", why:"Low-cost core. Owns India's biggest companies.", pct:eq*eqSplit[0]/100},
+      {c:"color-mix(in srgb,var(--accent) 65%,var(--surface))", name:"Flexi-cap fund", why:"Fund manager moves across large, mid and small companies.", pct:eq*eqSplit[1]/100},
+      {c:"color-mix(in srgb,var(--accent) 35%,var(--surface))", name:"Mid-cap / small-cap fund", why:"Higher growth, bigger swings. Only for 7+ year money.", pct:eq*eqSplit[2]/100},
+      {c:"var(--marigold)", name:"EPF / VPF / PPF / debt fund", why:"Steady part. Cushions market falls. NPS is an option if you're fine locking money till 60.", pct:debt},
+      {c:"color-mix(in srgb,var(--marigold) 45%,var(--surface))", name:"Gold ETF or gold fund", why:"Hedge when markets or the rupee fall.", pct:gold}
+    ].filter(function(r){return r.pct>0.5;});
+    $("allocTotal").textContent = inrNum(monthly);
+    $("allocWhy").textContent = eq + "% equity, " + debt + "% debt, " + gold + "% gold. Based on your age, " + yrs + " years to retirement and " + ({low:"low",mid:"medium",high:"high"}[S.risk]) + " risk comfort. Equity falls as you get closer to retirement.";
+    $("allocBar").innerHTML = rows.map(function(r){return '<span style="width:'+r.pct+'%;background:'+r.c+'" title="'+r.name+'"></span>';}).join("");
+    $("allocList").innerHTML = rows.map(function(r){
+      return '<div class="alloc-row"><span class="dot" style="background:'+r.c+'"></span><div><b>'+r.name+'</b><p>'+r.why+'</p></div><div class="amt">'+inr(monthly*r.pct/100,false)+'<small>'+Math.round(r.pct)+'%</small></div></div>';
+    }).join("");
+
+    // Ladder
+    var emTarget = 6*p.E, em = n(S.emergency), hl = n(S.health), tm = n(S.term), bd = n(S.badDebt);
+    var termTarget = S.deps==="yes" ? 15*12*p.inc : 0;
+    var steps = [
+      {t:"Emergency fund", d:"6 months of expenses ("+inr(emTarget)+") in a savings account, FD or liquid fund.", ok: em>=emTarget, miss: inr(Math.max(0,emTarget-em))+" short"},
+      {t:"Health insurance", d:"At least ₹10 L family cover of your own, even if work gives you some.", ok: hl>=1e6, miss: inr(Math.max(0,1e6-hl))+" short"},
+      {t:"Term life insurance", d: S.deps==="yes" ? "About 15× yearly income ("+inr(termTarget)+"). Pure term plan, no investment mixed in." : "Not needed while no one depends on your income.", ok: tm>=termTarget, miss: inr(Math.max(0,termTarget-tm))+" short"},
+      {t:"Clear costly debt", d:"Credit cards and personal loans charge 14–40%. No investment beats that.", ok: bd<=0, miss: inr(bd)+" to clear"},
+      {t:"Retirement SIP", d:"Invest "+inr(req,false)+" a month to retire at "+p.R+".", ok: p.sip>=req, miss: inr(Math.max(0,req-p.sip),false)+"/mo more"},
+      {t:"Goal SIPs", d:"Separate SIPs for each goal below, so you don't dip into retirement money.", ok: null}
+    ];
+    var nextIdx = steps.findIndex(function(s){return s.ok===false;});
+    $("ladderList").innerHTML = steps.map(function(s,i){
+      var cls = s.ok ? "done" : (i===nextIdx ? "next" : "");
+      var chip = s.ok===null ? "" : s.ok ? '<span class="chip good">Done</span>' : (i===nextIdx ? '<span class="chip next">Do next</span>' : '<span class="chip bad">'+s.miss+'</span>');
+      var d = s.d + (s.ok===false && i===nextIdx ? " You're "+s.miss+"." : "");
+      return '<li class="'+cls+'"><div><h3>'+s.t+'</h3><p>'+d+'</p></div>'+chip+'</li>';
+    }).join("");
+
+    // Goals
+    var goalTotal = 0;
+    S.goals.forEach(function(g, idx){
+      var y = Math.max(1, n(g.years)), c = Math.max(0, n(g.cost));
+      var fv = c*Math.pow(1+p.i, y), r = goalReturn(y), m = c>0 ? fvSip(fv, y, r) : 0;
+      goalTotal += m;
+      var el = $("g"+idx+"r");
+      if (el) el.innerHTML = '<span>Will cost <b>'+inr(fv)+'</b> in '+y+' yrs</span><span><b>'+inr(m,false)+'</b>/mo in '+goalWhere(y)+'</span>';
+    });
+
+    // Total
+    var surplus = p.inc - p.E;
+    var totalNeed = req + goalTotal + (em < emTarget ? (emTarget-em)/12 : 0);
+    var pctUse = surplus > 0 ? totalNeed / surplus : 2;
+    var col = pctUse <= 0.85 ? "var(--good)" : pctUse <= 1 ? "var(--warn)" : "var(--bad)";
+    var verdict = surplus <= 0 ? "Your expenses are higher than your income. Cutting costs comes first."
+      : pctUse <= 0.85 ? "Comfortable. Your income covers the full plan with room to spare."
+      : pctUse <= 1 ? "Tight but doable. Little room for surprises."
+      : "The plan needs more than you save. Push retirement a few years later, cut expenses, or raise income.";
+    var savRate = p.inc>0 ? Math.round(surplus/p.inc*100) : 0;
+    $("total").innerHTML =
+      '<div class="total-line"><span>Retirement SIP</span><span>'+inr(req,false)+'</span></div>'+
+      '<div class="total-line"><span>Goal SIPs</span><span>'+inr(goalTotal,false)+'</span></div>'+
+      (em<emTarget ? '<div class="total-line"><span>Build emergency fund (over 12 months)</span><span>'+inr((emTarget-em)/12,false)+'</span></div>' : '')+
+      '<div class="total-line sum"><span>Total each month</span><span>'+inr(totalNeed,false)+'</span></div>'+
+      '<div class="total-line"><span>You can save (income − expenses)</span><span>'+inr(surplus,false)+' · '+savRate+'% of income</span></div>'+
+      '<div class="meter" aria-hidden="true"><span style="width:'+Math.min(100,Math.round(pctUse*100))+'%;background:'+col+'"></span></div>'+
+      '<p style="color:'+col+';font-weight:600;font-size:.9rem">'+verdict+'</p>';
+
+    save();
+  }
+
+  // ---------- Wire up ----------
+  function fillForm(){ FIELDS.forEach(function(k){ var el=$(k); if(el) el.value = S[k]; }); }
+  FIELDS.forEach(function(k){
+    var el = $(k);
+    el.addEventListener("input", function(){ S[k] = el.tagName==="SELECT" ? el.value : el.value; isExample=false; render(); });
+    el.addEventListener("change", function(){ S[k] = el.value; isExample=false; render(); });
+  });
+  $("goals").addEventListener("input", function(e){
+    var t = e.target; if(!t.dataset || t.dataset.g===undefined) return;
+    S.goals[+t.dataset.g][t.dataset.k] = t.dataset.k==="name" ? t.value : t.value;
+    isExample=false; render();
+  });
+  $("goals").addEventListener("click", function(e){
+    var d = e.target.closest("[data-del]"); if(!d) return;
+    S.goals.splice(+d.dataset.del,1); isExample=false; renderGoals(); render();
+  });
+  $("addGoal").addEventListener("click", function(){
+    S.goals.push({name:"New goal", cost:500000, years:5}); isExample=false; renderGoals(); render();
+    var inp = $("g"+(S.goals.length-1)+"n"); if (inp){ inp.focus(); inp.select(); }
+  });
+  var armed = false;
+  $("resetBtn").addEventListener("click", function(){
+    var b = $("resetBtn");
+    if (!armed){ armed = true; b.textContent = "Tap again to erase your numbers"; setTimeout(function(){armed=false;b.textContent="Reset to example";},3000); return; }
+    armed=false; b.textContent="Reset to example";
+    S = clone(EX); isExample = true; fillForm(); renderGoals(); render();
+  });
+
+  fillForm(); renderGoals(); render();
+})();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+}
+</script>
+</body>
+</html>
