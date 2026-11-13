@@ -19,58 +19,90 @@
 :root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0}
 img{max-width:100%}
-[hidden]{display:none!important}
 
-/* Layout: single mobile-first column; answer first, then inputs, then the detail that explains it */
+/* Layout: phone-app shell. One view at a time, bottom tab bar, hero answer on Home */
 :root{
-  --bg:#F2F5F1; --surface:#FFFFFF; --ink:#13241D; --muted:#5A6A62; --line:#D9E1DB;
-  --accent:#0E6A4E; --accent-soft:#E0EEE6; --marigold:#D88A10;
-  --good:#1D8657; --warn:#B87309; --bad:#BE3E2A;
-  --good-soft:#E1F1E8; --warn-soft:#FBEFD9; --bad-soft:#F8E3DF;
+  --bg:#EDF2EE; --surface:#FFFFFF; --surface-2:#F4F8F5; --ink:#0F1F18; --muted:#5A6B62; --line:#DCE5DF;
+  --accent:#0B6B4D; --accent-soft:#DCEEE4; --marigold:#DE9010;
+  --hero1:#08463A; --hero2:#0F7656; --on-hero:#F3FBF7;
+  --good:#1A8556; --warn:#B26F06; --bad:#BC3B27;
+  --good-soft:#DFF1E7; --warn-soft:#FBEED6; --bad-soft:#F8E1DC;
+  --shadow:0 1px 2px rgba(15,40,30,.05),0 10px 28px -14px rgba(15,40,30,.22);
   --display:"Sora",ui-sans-serif,system-ui,sans-serif;
   --body:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0D1512; --surface:#141F1A; --ink:#E6EEE9; --muted:#93A49B; --line:#26352E;
-  --accent:#5CC79C; --accent-soft:#17302A; --marigold:#F0B04A;
+  --bg:#09110D; --surface:#111B16; --surface-2:#16231C; --ink:#E6EFE9; --muted:#91A398; --line:#22322A;
+  --accent:#52C897; --accent-soft:#15302A; --marigold:#F2B24B;
+  --hero1:#0A3527; --hero2:#115A42; --on-hero:#F1FAF5;
   --good:#5CC79C; --warn:#F0B04A; --bad:#F27D69;
-  --good-soft:#163026; --warn-soft:#33280F; --bad-soft:#36191A; color-scheme:dark}}
+  --good-soft:#143024; --warn-soft:#33270E; --bad-soft:#371A19;
+  --shadow:0 0 0 1px rgba(255,255,255,.015); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0D1512; --surface:#141F1A; --ink:#E6EEE9; --muted:#93A49B; --line:#26352E;
-  --accent:#5CC79C; --accent-soft:#17302A; --marigold:#F0B04A;
+  --bg:#09110D; --surface:#111B16; --surface-2:#16231C; --ink:#E6EFE9; --muted:#91A398; --line:#22322A;
+  --accent:#52C897; --accent-soft:#15302A; --marigold:#F2B24B;
+  --hero1:#0A3527; --hero2:#115A42; --on-hero:#F1FAF5;
   --good:#5CC79C; --warn:#F0B04A; --bad:#F27D69;
-  --good-soft:#163026; --warn-soft:#33280F; --bad-soft:#36191A; color-scheme:dark}
+  --good-soft:#143024; --warn-soft:#33270E; --bad-soft:#371A19;
+  --shadow:0 0 0 1px rgba(255,255,255,.015); color-scheme:dark}
 
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px;
-  font-variant-numeric:tabular-nums}
-.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
-h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-0.01em}
-h2{font-size:1.25rem}
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:18px calc(96px + env(safe-area-inset-bottom,0px));font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-0.015em}
+h2{font-size:1.2rem}
 h3{font-size:1rem}
 p{margin:0}
 .muted{color:var(--muted)}
-.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.eyebrow{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
 section{display:flex;flex-direction:column;gap:14px}
 .sec-head{display:flex;flex-direction:column;gap:4px}
 
-header.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
-header.top h1{font-size:1.1rem}
-.badge{font-size:.75rem;padding:3px 10px;border-radius:999px;background:var(--warn-soft);color:var(--warn);font-weight:600}
+/* Header */
+header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;padding-top:4px}
+header.top h1{font-size:1.75rem;font-weight:700}
+.badge{font-size:.72rem;padding:5px 11px;border-radius:999px;background:var(--warn-soft);color:var(--warn);font-weight:600;text-decoration:none}
 
-/* Hero answer */
-.hero{background:var(--accent);color:var(--bg);border-radius:20px;padding:22px 20px;display:flex;flex-direction:column;gap:18px}
-.hero .eyebrow{color:inherit;opacity:.8}
-.hero-big{font-family:var(--display);font-size:clamp(2.2rem,9vw,3.2rem);font-weight:700;line-height:1.05}
-.hero-sub{opacity:.9;max-width:52ch}
-.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;border-top:1px solid color-mix(in srgb,var(--bg) 30%,transparent);padding-top:16px}
+/* Hero */
+.hero{position:relative;overflow:hidden;color:var(--on-hero);border-radius:26px;padding:24px 22px 20px;display:flex;flex-direction:column;gap:18px;
+  background:radial-gradient(90% 110% at 105% -5%, color-mix(in srgb,var(--marigold) 50%,transparent) 0%, transparent 58%),linear-gradient(155deg,var(--hero1),var(--hero2));
+  box-shadow:var(--shadow)}
+.hero::after{content:"";position:absolute;right:-70px;bottom:-90px;width:240px;height:240px;border-radius:50%;pointer-events:none;
+  border:1px solid color-mix(in srgb,var(--on-hero) 16%,transparent);
+  box-shadow:0 0 0 34px color-mix(in srgb,var(--on-hero) 4%,transparent),0 0 0 68px color-mix(in srgb,var(--on-hero) 3%,transparent)}
+.hero > *{position:relative;z-index:1}
+.hero .eyebrow{color:inherit;opacity:.75}
+.hero-big{font-family:var(--display);font-size:clamp(2.3rem,10vw,3.4rem);font-weight:700;line-height:1.02;letter-spacing:-0.03em;margin-top:6px}
+.hero-sub{opacity:.88;max-width:50ch;font-size:.93rem}
+.hero-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;border-top:1px solid color-mix(in srgb,var(--on-hero) 22%,transparent);padding-top:16px}
 .hero-grid div{display:flex;flex-direction:column;gap:2px;min-width:0}
-.hero-grid strong{font-family:var(--display);font-size:1.3rem;font-weight:600}
-.hero-grid span{font-size:.8rem;opacity:.85}
+.hero-grid strong{font-family:var(--display);font-size:1.15rem;font-weight:600}
+.hero-grid span{font-size:.72rem;opacity:.8;line-height:1.3}
+@media (max-width:380px){.hero-grid{grid-template-columns:1fr 1fr}}
 
-/* Form */
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+/* Home tiles */
+.home-tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile,.ring-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:var(--shadow);min-width:0}
+.tile{font:inherit;color:var(--ink);text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:3px;transition:transform .15s ease,border-color .15s ease}
+.tile:hover{border-color:var(--accent)}
+.tile:active{transform:scale(.98)}
+.tile span{font-size:.75rem;color:var(--muted);font-weight:600}
+.tile strong{font-family:var(--display);font-size:1.3rem;font-weight:600;letter-spacing:-0.02em}
+.tile small{font-size:.75rem;color:var(--muted)}
+.ring-card{display:flex;align-items:center;gap:12px}
+.ring{width:62px;height:62px;flex:none;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9}
+.ring .ring-bg{stroke:var(--line)}
+.ring .ring-fg{stroke:var(--accent);stroke-linecap:round;stroke-dasharray:314.16;transition:stroke-dashoffset .6s ease}
+.ring-txt{display:flex;flex-direction:column;gap:1px;min-width:0}
+.ring-txt strong{font-family:var(--display);font-size:1.3rem}
+.ring-txt span{font-size:.75rem;color:var(--muted);line-height:1.3}
+
+/* Panels and forms */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow)}
 details.panel>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--display);font-weight:600}
 details.panel>summary::-webkit-details-marker{display:none}
 details.panel>summary::after{content:"Show";font-family:var(--body);font-size:.8rem;color:var(--accent);font-weight:600}
@@ -78,34 +110,37 @@ details.panel[open]>summary::after{content:"Hide"}
 .fgroup{display:flex;flex-direction:column;gap:10px;padding-top:14px}
 .fgroup + .fgroup{border-top:1px solid var(--line);margin-top:14px}
 .fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
-label.f{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);min-width:0}
-label.f input,label.f select,.goal input{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
-label.f input:focus,label.f select:focus,.goal input:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.hint{font-size:.72rem;color:var(--muted)}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:.78rem;color:var(--muted);font-weight:500;min-width:0}
+label.f input,label.f select,.goal input,.goal select,.paybox input{font:inherit;font-size:1rem;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;width:100%;min-width:0;transition:border-color .15s ease,box-shadow .15s ease}
+label.f input:focus,label.f select:focus,.goal input:focus,.goal select:focus,.paybox input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+button:focus-visible,.tabbar a:focus-visible,.tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{font-size:.72rem;color:var(--muted);font-weight:400}
 .row-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-top:14px}
-button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;font-weight:600;font-size:.85rem}
-button.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+button{font:inherit;cursor:pointer;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 14px;font-weight:600;font-size:.85rem;transition:transform .1s ease}
+button:active{transform:scale(.97)}
+button.primary{background:var(--accent);color:var(--bg);border-color:var(--accent);border-radius:999px;padding:11px 18px}
 button.link{border:none;background:none;color:var(--accent);padding:4px 0}
 
 /* Chart */
-.chart-box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 10px 8px}
+.chart-box{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 10px 8px;box-shadow:var(--shadow)}
 .chart-box svg{width:100%;height:auto;display:block}
 .chart-box .axis{fill:var(--muted);font-size:11px;font-family:var(--body)}
 .chart-box .grid{stroke:var(--line);stroke-width:1}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);padding:6px 6px 4px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.78rem;color:var(--muted);padding:6px 6px 4px}
 .legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
 
-/* Stats list */
-.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.kv div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.kv strong{font-family:var(--display);font-size:1.15rem}
-.kv span{font-size:.8rem;color:var(--muted)}
+/* Stat cards */
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.kv div{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px 14px;display:flex;flex-direction:column;gap:3px;min-width:0;box-shadow:var(--shadow)}
+.kv strong{font-family:var(--display);font-size:1.2rem;letter-spacing:-0.02em}
+.kv span{font-size:.78rem;color:var(--muted)}
+.kv button{margin-top:6px;align-self:flex-start}
 
 /* Allocation */
-.stack{display:flex;height:16px;border-radius:999px;overflow:hidden;background:var(--line)}
+.stack{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--line);gap:2px}
 .stack span{display:block;height:100%}
 .alloc{display:flex;flex-direction:column;gap:2px}
-.alloc-row{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}
+.alloc-row{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:start;padding:11px 0;border-bottom:1px solid var(--line)}
 .alloc-row:last-child{border-bottom:none}
 .dot{width:10px;height:10px;border-radius:3px;margin-top:6px}
 .alloc-row b{font-weight:600}
@@ -115,56 +150,73 @@ button.link{border:none;background:none;color:var(--accent);padding:4px 0}
 
 /* Ladder */
 ol.ladder{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:step}
-ol.ladder li{counter-increment:step;display:grid;grid-template-columns:30px 1fr auto;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
-ol.ladder li::before{content:counter(step);font-family:var(--display);font-weight:600;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line);font-size:.85rem}
-ol.ladder li.next{border-color:var(--marigold);box-shadow:0 0 0 1px var(--marigold) inset}
-ol.ladder li.done::before{background:var(--good-soft);color:var(--good);border-color:transparent}
+ol.ladder li{counter-increment:step;display:grid;grid-template-columns:30px 1fr auto;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px;box-shadow:var(--shadow)}
+ol.ladder li::before{content:counter(step);font-family:var(--display);font-weight:600;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--line);font-size:.82rem}
+ol.ladder li.next{border-color:var(--marigold);box-shadow:0 0 0 1px var(--marigold) inset,var(--shadow)}
+ol.ladder li.done::before{content:"✓";background:var(--good-soft);color:var(--good);border-color:transparent}
 ol.ladder li div{min-width:0;display:flex;flex-direction:column;gap:2px}
 ol.ladder li p{font-size:.82rem;color:var(--muted)}
-.chip{font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.chip{font-size:.7rem;font-weight:600;padding:4px 9px;border-radius:999px;white-space:nowrap}
 .chip.good{background:var(--good-soft);color:var(--good)}
 .chip.warn{background:var(--warn-soft);color:var(--warn)}
 .chip.bad{background:var(--bad-soft);color:var(--bad)}
 .chip.next{background:var(--warn-soft);color:var(--warn)}
 
-/* Goals */
-.goals{display:flex;flex-direction:column;gap:10px}
-.goal{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:2fr 1.3fr .8fr auto;gap:8px;align-items:end}
-.goal label{display:flex;flex-direction:column;gap:3px;font-size:.72rem;color:var(--muted);min-width:0}
-.goal .res{grid-column:1/-1;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.85rem;border-top:1px dashed var(--line);padding-top:8px}
+/* Goals and loans */
+.goals{display:flex;flex-direction:column;gap:12px}
+.goal{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;display:grid;grid-template-columns:2fr 1.3fr .8fr auto;gap:10px;align-items:end;box-shadow:var(--shadow)}
+.goal label{display:flex;flex-direction:column;gap:4px;font-size:.72rem;color:var(--muted);font-weight:500;min-width:0}
+.goal .res{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px 10px;flex-wrap:wrap;font-size:.85rem;border-top:1px dashed var(--line);padding-top:10px}
 .goal .res b{font-family:var(--display)}
-.goal button{padding:9px 10px}
+.goal button{padding:10px}
 @media (max-width:480px){.goal{grid-template-columns:1fr 1fr}.goal label:first-child{grid-column:1/-1}}
-
 .goal.loan{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
 @media (max-width:480px){.goal.loan{grid-template-columns:1fr 1fr}.goal.loan label:first-child{grid-column:1/-1}}
-.goal select{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+.goal.loan > label:first-child input{font-family:var(--display);font-weight:600}
+.paybox{grid-column:1/-1;display:flex;gap:8px;align-items:end;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:10px}
+.paybox label{flex:1 1 140px;display:flex;flex-direction:column;gap:4px;font-size:.72rem;color:var(--muted)}
+.paybox button{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+
+/* Expenses */
 .addtx{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;align-items:end}
-.monthnav{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.monthnav strong{font-family:var(--display);font-size:1.05rem}
-.monthnav button{min-width:44px;font-size:1.1rem}
+.monthnav{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px;box-shadow:var(--shadow)}
+.monthnav strong{font-family:var(--display);font-size:1rem}
+.monthnav button{min-width:40px;height:40px;font-size:1.1rem;border-radius:999px;border:none;background:var(--surface-2)}
 .monthnav button:disabled{opacity:.35;cursor:default}
-.catrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:7px 0;font-size:.9rem}
-.catrow .bar{grid-column:1/-1;height:6px;border-radius:999px;background:var(--line);overflow:hidden}
-.catrow .bar span{display:block;height:100%;background:var(--accent);border-radius:999px}
-.txrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.catrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 12px;padding:8px 0;font-size:.9rem}
+.catrow .bar{grid-column:1/-1;height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.catrow .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 60%,var(--marigold)));border-radius:999px}
+.txrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:.88rem}
 .txrow:last-child{border-bottom:none}
 .txrow small{display:block;color:var(--muted)}
-.txrow button{padding:4px 9px}
-.kv button{margin-top:6px;align-self:flex-start}
-ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:.88rem;color:var(--muted)}
-.goal .res{align-items:center}
-#loanPlan{display:flex;flex-direction:column;gap:10px;font-size:.9rem}
-#loanPlan b{font-family:var(--display)}
-.total{display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.txrow button{padding:4px 9px;border:none;background:var(--surface-2)}
+
+/* Totals */
+.total{display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow)}
 .total-line{display:flex;justify-content:space-between;gap:12px;font-size:.92rem}
 .total-line.sum{border-top:1px solid var(--line);padding-top:10px;font-weight:600}
 .total-line.sum span:last-child{font-family:var(--display);font-size:1.15rem}
-.meter{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.meter{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden}
 .meter span{display:block;height:100%;border-radius:999px}
+#loanPlan{display:flex;flex-direction:column;gap:10px;font-size:.9rem}
+#loanPlan b{font-family:var(--display)}
+ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:.88rem;color:var(--muted)}
+.note{font-size:.78rem;color:var(--muted);line-height:1.55;padding:4px 2px}
 
-.note{font-size:.78rem;color:var(--muted);line-height:1.55;border-top:1px solid var(--line);padding-top:16px}
-@media (prefers-reduced-motion:no-preference){.meter span,.stack span{transition:width .3s ease}}
+/* Tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:space-around;gap:2px;
+  padding:8px max(10px,env(safe-area-inset-left,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-right,0px));
+  background:color-mix(in srgb,var(--surface) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid var(--line)}
+.tabbar a{flex:1;max-width:96px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:14px;color:var(--muted);text-decoration:none;font-size:.68rem;font-weight:600;transition:color .15s ease,background .15s ease}
+.tabbar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabbar a[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+@media (min-width:760px){.tabbar{left:50%;right:auto;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));padding:8px;width:min(520px,calc(100% - 32px));border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}}
+
+@media (prefers-reduced-motion:no-preference){
+  [data-view]:not([hidden]){animation:rise .32s ease both}
+  @keyframes rise{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .meter span,.stack span{transition:width .3s ease}
+}
 </style>
 </head>
 <body>
@@ -172,12 +224,12 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 
 <div class="wrap">
   <header class="top">
-    <h1>My Freedom Plan</h1>
-    <span class="badge" id="exBadge">Example numbers. Replace with yours</span>
+    <div><div class="eyebrow">My Freedom Plan</div><h1 id="tabTitle">Home</h1></div>
+    <a class="badge" id="exBadge" href="#me">Example numbers · add yours</a>
   </header>
 
   <!-- Answer first -->
-  <div class="hero" aria-live="polite">
+  <div class="hero" aria-live="polite" data-view="home">
     <div>
       <div class="eyebrow">On your current plan</div>
       <div class="hero-big" id="hBig">Retire at 52</div>
@@ -190,8 +242,18 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
     </div>
   </div>
 
+  <div class="home-tiles" data-view="home">
+    <div class="ring-card">
+      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="50" style="stroke-dashoffset:314.16"/></svg>
+      <div class="ring-txt"><strong id="ringNum">0/5</strong><span>safety steps done</span></div>
+    </div>
+    <button type="button" class="tile" data-go="spend"><span>Spent this month</span><strong id="tSpend">–</strong><small id="tSpendSub">Open spending</small></button>
+    <button type="button" class="tile" data-go="loans"><span>You owe</span><strong id="tOwe">–</strong><small id="tOweSub">Open loans</small></button>
+    <button type="button" class="tile" data-go="grow"><span>Plan each month</span><strong id="tInv">–</strong><small>See where to invest</small></button>
+  </div>
+
   <!-- Inputs -->
-  <details class="panel" id="formPanel" open>
+  <details class="panel" id="formPanel" open data-view="me">
     <summary>Your numbers</summary>
     <div class="fgroup">
       <div class="eyebrow">About you</div>
@@ -239,7 +301,7 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   </details>
 
   <!-- Expenses -->
-  <section id="spendSec">
+  <section id="spendSec" data-view="spend">
     <div class="sec-head">
       <div class="eyebrow">Expenses</div>
       <h2>Where your money goes</h2>
@@ -266,7 +328,7 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   </section>
 
   <!-- Retirement -->
-  <section id="retire">
+  <section id="retire" data-view="grow">
     <div class="sec-head">
       <div class="eyebrow">Retirement</div>
       <h2>How your money grows and lasts</h2>
@@ -282,7 +344,7 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   </section>
 
   <!-- Where to invest -->
-  <section id="where">
+  <section id="where" data-view="grow">
     <div class="sec-head">
       <div class="eyebrow">Where to invest</div>
       <h2>Your monthly ₹<span id="allocTotal">–</span>, split by asset</h2>
@@ -293,7 +355,7 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   </section>
 
   <!-- Ladder -->
-  <section id="ladder">
+  <section id="ladder" data-view="home">
     <div class="sec-head">
       <div class="eyebrow">Money order of operations</div>
       <h2>Do these in order</h2>
@@ -303,15 +365,15 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   </section>
 
   <!-- Loans -->
-  <section id="loansSec">
+  <section id="loansSec" data-view="loans">
     <div class="sec-head">
       <div class="eyebrow">Loans</div>
-      <h2>Your loans and when they end</h2>
-      <p class="muted">Add each loan with what you still owe, its interest rate and EMI. You'll find these in your loan app or statement.</p>
+      <h2>Loans and money you owe</h2>
+      <p class="muted">Add bank loans and money borrowed from friends or family. Tap Record payment each time you pay something back.</p>
     </div>
     <div class="kv" id="loanKv"></div>
     <div class="goals" id="loans"></div>
-    <div><button type="button" id="addLoan">Add a loan</button></div>
+    <div><button type="button" id="addLoan">Add a loan or money owed</button></div>
     <div class="total">
       <h3>Pay loans off faster</h3>
       <label class="f">Extra I can pay each month (₹)<input id="extraPay" type="number" inputmode="numeric" min="0" step="500"><span class="hint">On top of your EMIs. Most banks allow part-prepayment</span></label>
@@ -320,7 +382,7 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   </section>
 
   <!-- Goals -->
-  <section id="goalsSec">
+  <section id="goalsSec" data-view="grow">
     <div class="sec-head">
       <div class="eyebrow">Other goals</div>
       <h2>Car, house, kids, travel</h2>
@@ -331,7 +393,7 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   </section>
 
   <!-- Total -->
-  <section id="totalSec">
+  <section id="totalSec" data-view="home">
     <div class="sec-head">
       <div class="eyebrow">This month</div>
       <h2>Can your income carry the plan?</h2>
@@ -339,8 +401,16 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
     <div class="total" id="total"></div>
   </section>
 
-  <p class="note">This is a planning calculator for learning, not investment advice. Returns are assumptions, and real markets go up and down. Fund categories are shown, not specific funds. For personal advice, speak to a SEBI-registered investment adviser (RIA). Check current tax rules before choosing old or new regime products like PPF, ELSS or NPS.</p>
+  <p class="note" data-view="me">This is a planning calculator for learning, not investment advice. Returns are assumptions, and real markets go up and down. Fund categories are shown, not specific funds. For personal advice, speak to a SEBI-registered investment adviser (RIA). Check current tax rules before choosing old or new regime products like PPF, ELSS or NPS.</p>
 </div>
+
+<nav class="tabbar" aria-label="Sections">
+  <a href="#home" data-tab="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a>
+  <a href="#spend" data-tab="spend"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 10h18M16 15h2"/></svg><span>Spending</span></a>
+  <a href="#loans" data-tab="loans"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>Loans</span></a>
+  <a href="#grow" data-tab="grow"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>Grow</span></a>
+  <a href="#me" data-tab="me"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Profile</span></a>
+</nav>
 
 <script>
 (function(){
@@ -372,7 +442,8 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
     loans:[
       {name:"Personal loan", kind:"emi", orig:500000, bal:300000, rate:13.5, emi:11600},
       {name:"Gold loan", kind:"gold", orig:150000, bal:150000, rate:9.5, months:10},
-      {name:"Bike loan", kind:"emi", orig:100000, bal:60000, rate:11, emi:3300}
+      {name:"Bike loan", kind:"emi", orig:100000, bal:60000, rate:11, emi:3300},
+      {name:"Ravi (friend)", kind:"friend", orig:50000, bal:30000, rate:0, emi:5000}
     ],
     tx: sampleTx(), txSample: true
   };
@@ -510,16 +581,17 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
       var el = document.createElement("div"); el.className = "goal loan";
       el.innerHTML =
         '<label>Loan<input id="l'+idx+'n" data-l="'+idx+'" data-k="name" type="text"></label>'+
-        '<label>Type<select id="l'+idx+'t" data-l="'+idx+'" data-k="kind"><option value="emi">EMI loan</option><option value="gold">Gold loan (interest only)</option></select></label>'+
+        '<label>Type<select id="l'+idx+'t" data-l="'+idx+'" data-k="kind"><option value="emi">EMI loan</option><option value="gold">Gold loan (interest only)</option><option value="friend">From friend / family</option></select></label>'+
         '<label>Paid by'+whoSelect('l'+idx+'w', 'data-l="'+idx+'" data-k="who"', l.who||"me")+'</label>'+
         '<label>Loan amount (₹)<input id="l'+idx+'o" data-l="'+idx+'" data-k="orig" type="number" inputmode="numeric" min="0" step="1000"></label>'+
         '<label>Still owe (₹)<input id="l'+idx+'b" data-l="'+idx+'" data-k="bal" type="number" inputmode="numeric" min="0" step="1000"></label>'+
         '<label>Interest %/yr<input id="l'+idx+'r" data-l="'+idx+'" data-k="rate" type="number" inputmode="decimal" min="0" max="60" step="0.1"></label>'+
         (gold
           ? '<label>Months left<input id="l'+idx+'m" data-l="'+idx+'" data-k="months" type="number" inputmode="numeric" min="1" max="60" step="1"></label>'
-          : '<label>EMI (₹/mo)<input id="l'+idx+'e" data-l="'+idx+'" data-k="emi" type="number" inputmode="numeric" min="0" step="100"></label>')+
+          : '<label>'+(l.kind==="friend" ? 'Plan to repay (₹/mo)' : 'EMI (₹/mo)')+'<input id="l'+idx+'e" data-l="'+idx+'" data-k="emi" type="number" inputmode="numeric" min="0" step="100"></label>')+
         '<button type="button" data-dell="'+idx+'" aria-label="Remove loan">Remove</button>'+
-        '<div class="res" id="l'+idx+'res"></div>';
+        '<div class="res" id="l'+idx+'res"></div>'+
+        '<div class="paybox"><label>Paid back (₹)<input id="l'+idx+'p" type="number" inputmode="numeric" min="1" step="100" placeholder="Amount"></label><button type="button" data-pay="'+idx+'">Record payment</button></div>';
       box.appendChild(el);
       if (!l.kind) l.kind = "emi";
       ["name","kind","orig","bal","rate", gold ? "months" : "emi"].forEach(function(k){ var f = el.querySelector('[data-k="'+k+'"]'); if (f) f.value = (l[k]===undefined ? "" : l[k]); });
@@ -666,6 +738,13 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
       else if (l.kind === "gold") line = '<span>Interest <b>'+inr(b*n(l.rate)/1200,false)+'</b>/mo · repay '+inr(b)+' by <b>'+monthLabel(s.due||12)+'</b></span>'+rateChip(n(l.rate));
       else if (s.end === null) line = '<span style="color:var(--bad)">EMI doesn\'t cover the interest. Check the numbers.</span>'+rateChip(n(l.rate));
       else line = '<span>Closes <b>'+monthLabel(s.end)+'</b> · '+inr(s.int)+' interest left</span>'+rateChip(n(l.rate));
+      if (l.kind === "friend" && b > 0){
+        line = n(l.emi) > 0
+          ? '<span>Done by <b>'+monthLabel(s.end||1)+'</b> at '+inr(n(l.emi),false)+'/mo</span>'+(n(l.rate)>0 ? rateChip(n(l.rate)) : '<span class="chip good">No interest</span>')
+          : '<span>Set a monthly amount to see when you\'ll be done.</span><span class="chip good">No interest</span>';
+      }
+      var pays = l.pays || [];
+      if (pays.length){ var lp0 = pays[pays.length-1]; line += '<span class="muted" style="flex-basis:100%">Last paid '+inr(lp0.a,false)+' on '+new Date(lp0.d+"T00:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})+' · '+pays.length+' payment'+(pays.length>1?'s':'')+' recorded</span>'; }
       el.innerHTML = prog + line;
     });
     var emiBy = {me:0,p2:0,joint:0};
@@ -694,6 +773,7 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
       }
       if (costlyBal <= 0) lp += '<p class="muted">All your loans are under 10%. Investing the extra may earn more than prepaying.</p>';
     }
+    if (loans.some(function(l){ return l.kind==="friend" && n(l.bal)>0; })) lp += '<p><b>Friends and family:</b> these cost no interest, so they come last in the order above. Still, agree a repay-by date with each person and pay the same amount every month. Steady payments keep the trust.</p>';
     goldNotes.forEach(function(g){
       lp += '<p><b>'+g.name+':</b> you pay only interest now, and the full '+inr(g.bal)+' is due in '+g.mo+' months. Set aside <b>'+inr(g.bal/g.mo,false)+'</b> a month so you can repay on time, or renew it before the due date. If it lapses, the lender can auction your gold.</p>';
     });
@@ -718,6 +798,7 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
       return '<li class="'+cls+'"><div><h3>'+s.t+'</h3><p>'+d+'</p></div>'+chip+'</li>';
     }).join("");
 
+    var doneN = steps.filter(function(x){ return x.ok===true; }).length, totN = steps.filter(function(x){ return x.ok!==null; }).length;
     // Goals
     var goalTotal = 0;
     S.goals.forEach(function(g, idx){
@@ -754,6 +835,15 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
           '<div class="total-line"><span>'+esc(whoName("p2"))+' ('+(100-s1)+'% of income)</span><span>'+inr(totalNeed*(100-s1)/100,false)+'/mo</span></div>'+
           '<p class="hint">Each of you puts in a share of the plan in line with your pay. Hold SIPs in the name of whoever invests the money, so tax stays simple.</p>'; })() : '');
 
+    // Home tiles
+    $("ringNum").textContent = doneN + "/" + totN;
+    $("ringFg").style.strokeDashoffset = (314.16 * (1 - (totN ? doneN/totN : 0))).toFixed(1);
+    var spentNow = sumMonth(ymOf(new Date()));
+    $("tSpend").textContent = inr(spentNow, false);
+    $("tSpendSub").textContent = p.E > 0 ? Math.round(spentNow/p.E*100) + "% of " + inr(p.E) + " plan" : "Open spending";
+    $("tOwe").textContent = totalBal > 0 ? inr(totalBal) : "Nothing";
+    $("tOweSub").textContent = totalBal > 0 ? inr(totalEmi,false) + "/mo in EMIs" : "Debt-free";
+    $("tInv").textContent = inr(totalNeed, false);
     renderSpend(costlyBal);
     save();
   }
@@ -895,6 +985,16 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
     var d = e.target.closest("[data-dell]"); if (!d) return;
     S.loans.splice(+d.dataset.dell, 1); isExample = false; renderLoans(); render();
   });
+  $("loans").addEventListener("click", function(e){
+    var b = e.target.closest("[data-pay]"); if (!b) return;
+    var i = +b.dataset.pay, inp = $("l"+i+"p"), a = n(inp.value);
+    if (a <= 0){ inp.focus(); return; }
+    var l = S.loans[i];
+    l.bal = Math.max(0, Math.round(n(l.bal) - a));
+    (l.pays = l.pays || []).push({d: ymd(new Date()), a: a});
+    $("l"+i+"b").value = l.bal; inp.value = "";
+    isExample = false; render();
+  });
   $("addLoan").addEventListener("click", function(){
     S.loans.push({name:"New loan", kind:"emi", orig:100000, bal:100000, rate:12, emi:3000}); isExample = false; renderLoans(); render();
     var inp = $("l"+(S.loans.length-1)+"n"); if (inp){ inp.focus(); inp.select(); }
@@ -907,7 +1007,21 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
     S = clone(EX); S.tx = sampleTx(); isExample = true; fillForm(); renderGoals(); renderLoans(); render();
   });
 
-  fillForm(); renderGoals(); renderLoans(); initSpend(); render();
+  var TABS = {home:"Home", spend:"Spending", loans:"Loans", grow:"Grow", me:"Profile"};
+  function showTab(t, scroll){
+    if (!TABS[t]) t = "home";
+    document.querySelectorAll("[data-view]").forEach(function(el){ el.hidden = el.dataset.view.split(" ").indexOf(t) < 0; });
+    document.querySelectorAll(".tabbar a").forEach(function(a){ if (a.dataset.tab === t) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+    $("tabTitle").textContent = TABS[t];
+    if (scroll !== false){ window.scrollTo(0,0); requestAnimationFrame(function(){ window.scrollTo(0,0); }); }
+    try { localStorage.setItem(KEY+"-tab", t); } catch(e){}
+  }
+  window.addEventListener("hashchange", function(){ showTab(location.hash.slice(1)); });
+  document.addEventListener("click", function(e){ var g = e.target.closest("[data-go]"); if (g) location.hash = g.dataset.go; });
+  var startTab = location.hash.slice(1);
+  if (!TABS[startTab]){ try { startTab = localStorage.getItem(KEY+"-tab") || "home"; } catch(e){ startTab = "home"; } }
+
+  fillForm(); renderGoals(); renderLoans(); initSpend(); render(); showTab(startTab, false);
 })();
 </script>
 
